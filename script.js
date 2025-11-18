@@ -34,7 +34,7 @@ function showToast(msg, ms=2800){
 }
 
 // ===== Seed if empty (keep eca + rival sample) =====
-(function seedIfEmpty(){
+/*(function seedIfEmpty(){
   if (load(LS_PLAYERS).length === 0 && load(LS_MATCHES).length === 0 && load(LS_RESULTS).length === 0){
     const p1 = { id: uid(), name: 'eca', pin: 'entoec6el', logo: null };
     const p2 = { id: uid(), name: 'rival', pin: genPin(), logo: null };
@@ -44,7 +44,7 @@ function showToast(msg, ms=2800){
     save(LS_RESULTS, [{ id: uid(), matchId: mId, goalsA: 2, goalsB: 1, evidence: null, submittedBy: p1.id, createdAt: new Date().toISOString() }]);
   }
 })();
-
+*/
 // ===== Elements =====
 const btnRegister = document.getElementById('btn-register');
 const btnCalendar = document.getElementById('btn-calendar');

@@ -11,7 +11,7 @@
 */
 
 // ===== Storage keys =====
-const LS_PLAYERS = 'fc_players_vfinal';
+//const LS_PLAYERS = 'fc_players_vfinal';
 const LS_MATCHES = 'fc_matches_vfinal';
 const LS_RESULTS = 'fc_results_vfinal';
 const LS_CODES = 'fc_codes_vfinal';

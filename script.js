@@ -17,7 +17,7 @@ const LS_RESULTS = 'fc_results_vfinal';
 const LS_CODES = 'fc_codes_vfinal';
 
 // ===== Admin key =====
-const ADMIN_KEY = '48279509';
+const ADMIN_KEY = '007';
 
 // ===== Utils =====
 const uid = () => 'id_' + Math.random().toString(36).slice(2,9);

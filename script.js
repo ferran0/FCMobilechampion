@@ -9,14 +9,7 @@
    - Eliminar jugador desde admin
    - Guardado local (localStorage)
 */
-// BORRAR jugadores iniciales Eca y Rival si existen
-let players = JSON.parse(localStorage.getItem("tournamentPlayers")) || [];
 
-// Filtrar para eliminar jugadores con nombre Eca o Rival
-players = players.filter(p => p.name.toLowerCase() !== "eca" && p.name.toLowerCase() !== "rival");
-
-// Guardar lista sin esos jugadores
-localStorage.setItem("tournamentPlayers", JSON.stringify(players));
 // ===== Storage keys =====
 const LS_PLAYERS = 'fc_players_vfinal';
 const LS_MATCHES = 'fc_matches_vfinal';

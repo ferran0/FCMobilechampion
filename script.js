@@ -10,7 +10,7 @@
    - Guardado local (localStorage)
 */
 
-// ===== Storage keys (sin cambios entre versiones) =====
+// ===== Storage keys =====
 const LS_PLAYERS = 'fc_players_vfinal';
 const LS_MATCHES = 'fc_matches_vfinal';
 const LS_RESULTS = 'fc_results_vfinal';
@@ -33,7 +33,7 @@ function showToast(msg, ms=2800){
   setTimeout(()=> toastEl.classList.remove('show'), ms);
 }
 
-// ===== Seed if empty (keep eca + rival sample) =====
+// ===== Seed if empty =====
 (function seedIfEmpty(){
  if (load(LS_PLAYERS).length === 0 && load(LS_MATCHES).length === 0 && load(LS_RESULTS).length === 0){
     const p1 = { id: uid(), name: 'eca', pin: 'entoec6el', logo: null };
@@ -92,7 +92,7 @@ const adminResultsBox = document.getElementById('admin-results');
 const btnExportAll = document.getElementById('btn-export-all');
 const btnLogoutAdmin = document.getElementById('btn-logout-admin');
 
-// ===== Tab switching =====
+// ===== Tabs =====
 function setActiveTab(tab){
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.panel').forEach(p => p.classList.add('hidden'));
@@ -108,7 +108,7 @@ btnTable.addEventListener('click', ()=> setActiveTab('table'));
 btnAdmin.addEventListener('click', ()=> setActiveTab('adminLogin'));
 setActiveTab('register');
 
-// ===== Register logic (with code usage) =====
+// ===== Register =====
 formRegister.addEventListener('submit', (ev)=>{
   ev.preventDefault();
   registerMsg.textContent=''; showPin.textContent='';
@@ -131,7 +131,7 @@ formRegister.addEventListener('submit', (ev)=>{
   refreshAll();
 });
 
-// ===== Admin login =====
+// ===== Admin Login =====
 formAdminLogin.addEventListener('submit', (ev)=>{
   ev.preventDefault();
   const key = adminKeyInput.value.trim(); adminKeyInput.value='';
@@ -139,14 +139,14 @@ formAdminLogin.addEventListener('submit', (ev)=>{
   else { adminLoginMsg.textContent = 'Clave incorrecta'; showToast('Clave incorrecta',1600); }
 });
 
-// ===== Generate code =====
+// ===== Generate Code =====
 btnGenerateCode.addEventListener('click', ()=>{
   const codes = load(LS_CODES);
   const code = { id: uid(), code: gen4(), used: false, createdAt: new Date().toISOString() };
   codes.push(code); save(LS_CODES, codes);
   renderCodes();
-  navigator.clipboard?.writeText(code.code).catch(()=>{}); // try copy
-  showToast('Código generado y copiado al portapapeles: ' + code.code, 2200);
+  navigator.clipboard?.writeText(code.code).catch(()=>{});
+  showToast('Código generado y copiado: ' + code.code, 2200);
 });
 function renderCodes(){
   const codes = load(LS_CODES);
@@ -154,7 +154,7 @@ function renderCodes(){
   codesActive.innerHTML = active.length ? `<div class="small">Códigos activos: ${active.join(' · ')}</div>` : '<div class="small">No hay códigos activos</div>';
 }
 
-// ===== Add match (with round/jornada) =====
+// ===== Add Match =====
 formAddMatch.addEventListener('submit', (ev)=>{
   ev.preventDefault();
   const round = Number(matchRoundInput.value) || 1;
@@ -163,8 +163,6 @@ formAddMatch.addEventListener('submit', (ev)=>{
   const b = selectPlayerB.value;
   if(!dt || !a || !b){ alert('Completa todos los campos'); return; }
   if(a===b){ alert('Selecciona jugadores distintos'); return; }
-  const players = load(LS_PLAYERS);
-  if(!players.find(p=>p.id===a) || !players.find(p=>p.id===b)){ alert('Jugador no encontrado'); return; }
   const matches = load(LS_MATCHES);
   matches.push({ id: uid(), datetime: new Date(dt).toISOString(), playerA: a, playerB: b, round, played: false });
   save(LS_MATCHES, matches);
@@ -173,7 +171,7 @@ formAddMatch.addEventListener('submit', (ev)=>{
   showToast('Partido agregado · Jornada ' + round, 1800);
 });
 
-// ===== Admin: save result =====
+// ===== Admin: Save Result =====
 formAdminResult.addEventListener('submit', (ev)=>{
   ev.preventDefault();
   const matchId = selectAdminMatch.value;
@@ -182,25 +180,23 @@ formAdminResult.addEventListener('submit', (ev)=>{
   if(!matchId || isNaN(gA) || isNaN(gB)){ alert('Completa todo'); return; }
   const matches = load(LS_MATCHES);
   const midx = matches.findIndex(m=>m.id===matchId);
-  if(midx === -1){ alert('Partido no encontrado'); return; }
-  // push result
+  const match = matches[midx];
   const results = load(LS_RESULTS);
+
   results.push({ id: uid(), matchId, goalsA: gA, goalsB: gB, evidence: null, submittedBy: 'admin', createdAt: new Date().toISOString() });
   save(LS_RESULTS, results);
-  // mark match played
+
   matches[midx].played = true;
   save(LS_MATCHES, matches);
-  // recompute stats (derived)
-  computeAndApplyStats(); // (keeps logic consistent)
+
   adminGoalsA.value=''; adminGoalsB.value='';
   refreshAll();
-  // show confirmation with match names
-  const match = matches[midx];
+
   const players = load(LS_PLAYERS); const mp = {}; players.forEach(p=>mp[p.id]=p.name);
   showToast(`Resultado guardado: ${mp[match.playerA]} ${gA} - ${gB} ${mp[match.playerB]}`, 3200);
 });
 
-// ===== Delete player =====
+// ===== Delete Player =====
 function deletePlayer(playerId){
   if(!confirm('Eliminar jugador y partidos/resultados relacionados?')) return;
   let players = load(LS_PLAYERS); players = players.filter(p=>p.id!==playerId); save(LS_PLAYERS, players);
@@ -212,7 +208,7 @@ function deletePlayer(playerId){
   showToast('Jugador eliminado',1400);
 }
 
-// ===== Compute stats (derived) =====
+// ===== Compute Stats =====
 function computeStats(){
   const players = load(LS_PLAYERS);
   const matches = load(LS_MATCHES);
@@ -230,15 +226,14 @@ function computeStats(){
     else if(r.goalsA < r.goalsB){ stats[b].pg++; stats[a].pp++; stats[b].pts += 3; }
     else { stats[a].pe++; stats[b].pe++; stats[a].pts++; stats[b].pts++; }
   });
-  const out = []; load(LS_PLAYERS).forEach(p=>{
-    const s = stats[p.id] || { pj:0,pg:0,pe:0,pp:0,gf:0,gc:0,pts:0 };
+  const out = []; players.forEach(p=>{
+    const s = stats[p.id];
     out.push({ id:p.id, name:p.name, pj:s.pj, pg:s.pg, pe:s.pe, pp:s.pp, gf:s.gf, gc:s.gc, gd:s.gf - s.gc, pts:s.pts });
   });
   return out;
 }
-function computeAndApplyStats(){ /* left empty on purpose: we use derived stats */ }
 
-// ===== Renderers =====
+// ===== Render Standings =====
 function renderStandings(){
   const data = computeStats();
   data.sort((x,y)=> { if(y.pts!==x.pts) return y.pts-x.pts; if(y.gd!==x.gd) return y.gd-x.gd; return y.gf-x.gf; });
@@ -248,6 +243,7 @@ function renderStandings(){
   standingsWrap.innerHTML = html;
 }
 
+// ===== Render Matches =====
 function renderMatchesList(){
   const matches = load(LS_MATCHES).slice().sort((a,b)=> new Date(a.datetime) - new Date(b.datetime));
   const players = load(LS_PLAYERS); const map = {}; players.forEach(p=>map[p.id]=p.name);
@@ -260,13 +256,13 @@ function renderMatchesList(){
   matchesList.innerHTML = html;
 }
 
+// ===== Render Calendar =====
 function renderCalendar(){
   const matches = load(LS_MATCHES).slice().sort((a,b)=> new Date(a.datetime) - new Date(b.datetime));
   const players = load(LS_PLAYERS); const map = {}; players.forEach(p=>map[p.id]=p.name);
   const filter = filterRound.value;
   let html = '';
   const rounds = [...new Set(matches.map(m=>m.round))].sort((a,b)=>a-b);
-  // populate filter
   filterRound.innerHTML = '<option value="">Todas</option>';
   rounds.forEach(r=> filterRound.insertAdjacentHTML('beforeend', `<option value="${r}">Jornada ${r}</option>`));
   matches.forEach(m=>{
@@ -287,53 +283,78 @@ function renderCalendar(){
   calendarList.innerHTML = html || '<p class="small">No hay partidos.</p>';
 }
 
-// fill admin selects
+// ===== Fill Admin Selects =====
 function fillAdminSelects(){
   const players = load(LS_PLAYERS);
-  selectPlayerA.innerHTML = '<option value="">Jugador A</option>'; selectPlayerB.innerHTML = '<option value="">Jugador B</option>';
+  selectPlayerA.innerHTML = '<option value="">Jugador A</option>';
+  selectPlayerB.innerHTML = '<option value="">Jugador B</option>';
   const matches = load(LS_MATCHES);
   selectAdminMatch.innerHTML = '<option value="">Seleccionar partido</option>';
-  players.forEach(p=> { selectPlayerA.insertAdjacentHTML('beforeend', `<option value="${p.id}">${escapeHtml(p.name)}</option>`); selectPlayerB.insertAdjacentHTML('beforeend', `<option value="${p.id}">${escapeHtml(p.name)}</option>`); });
-  matches.forEach(m=> selectAdminMatch.insertAdjacentHTML('beforeend', `<option value="${m.id}">${new Date(m.datetime).toLocaleString()} · Jornada ${m.round}</option>`));
+
+  players.forEach(p=>{
+    selectPlayerA.insertAdjacentHTML('beforeend', `<option value="${p.id}">${escapeHtml(p.name)}</option>`);
+    selectPlayerB.insertAdjacentHTML('beforeend', `<option value="${p.id}">${escapeHtml(p.name)}</option>`);
+  });
+
+  matches.forEach(m=>{
+    const pmap = load(LS_PLAYERS).reduce((a,p)=> (a[p.id]=p.name, a), {});
+    const label = `${escapeHtml(pmap[m.playerA])} vs ${escapeHtml(pmap[m.playerB])} · J${m.round}`;
+    selectAdminMatch.insertAdjacentHTML('beforeend', `<option value="${m.id}">${label}</option>`);
+  });
 }
 
-// admin players
+// ===== Admin Players =====
 function renderAdminPlayers(){
   const players = load(LS_PLAYERS);
-  if(!adminPlayersBox) return;
   if(players.length===0){ adminPlayersBox.innerHTML = '<p class="small">No hay jugadores.</p>'; return; }
-  let html=''; players.forEach(p=> html += `<div class="player-row"><div><strong>${escapeHtml(p.name)}</strong><div class="small">PIN: <code>${escapeHtml(p.pin)}</code></div></div><div><button data-id="${p.id}" class="btn delete-player">Eliminar</button></div></div>`);
+  let html='';
+  players.forEach(p=> html += `<div class="player-row"><div><strong>${escapeHtml(p.name)}</strong><div class="small">PIN: <code>${escapeHtml(p.pin)}</code></div></div><div><button data-id="${p.id}" class="btn delete-player">Eliminar</button></div></div>`);
   adminPlayersBox.innerHTML = html;
   document.querySelectorAll('.delete-player').forEach(b=> b.addEventListener('click', ()=> deletePlayer(b.getAttribute('data-id'))));
 }
 
-// admin results
+// ===== Admin Results =====
 function renderAdminResults(){
   const results = load(LS_RESULTS).slice().sort((a,b)=> new Date(b.createdAt) - new Date(a.createdAt));
-  const matches = load(LS_MATCHES); const players = load(LS_PLAYERS);
+  const matches = load(LS_MATCHES);
+  const players = load(LS_PLAYERS);
   const pmap = {}; players.forEach(p=> pmap[p.id] = p.name);
-  if(!adminResultsBox) return;
-  if(results.length===0){ adminResultsBox.innerHTML = '<p class="small">No hay resultados.</p>'; return; }
-  let html=''; results.forEach(r=> { const m = matches.find(mm=> mm.id===r.matchId) || {}; const a = pmap[m.playerA]||'--'; const b = pmap[m.playerB]||'--'; html += `<div class="res-row"><div><strong>${escapeHtml(a)} ${r.goalsA} - ${r.goalsB} ${escapeHtml(b)}</strong><div class="small">Fecha: ${new Date(r.createdAt).toLocaleString()} · por: ${r.submittedBy}</div></div></div>`; });
+
+  if(results.length===0){
+    adminResultsBox.innerHTML = '<p class="small">No hay resultados registrados.</p>';
+    return;
+  }
+
+  let html = '';
+  results.forEach(r=>{
+    const m = matches.find(x=>x.id===r.matchId);
+    if(!m) return;
+    html += `
+      <div class="result-row">
+        <div><strong>${escapeHtml(pmap[m.playerA])} ${r.goalsA} - ${r.goalsB} ${escapeHtml(pmap[m.playerB])}</strong></div>
+        <div class="small">J${m.round} · ${new Date(r.createdAt).toLocaleString()}</div>
+      </div>
+    `;
+  });
+
   adminResultsBox.innerHTML = html;
 }
 
-// ===== Export CSVs =====
-exportCsvBtn.addEventListener('click', ()=> { downloadBlob(buildStandingsCSV(), 'text/csv;charset=utf-8;', 'standings.csv'); });
-btnExportAll.addEventListener('click', ()=> { downloadBlob(buildAllCSV(), 'text/csv;charset=utf-8;', 'results_all.csv'); });
-
-function buildStandingsCSV(){ const s = computeStats(); const rows=[['Jugador','PJ','PG','PE','PP','GF','GC','DG','PTS']]; s.forEach(r=> rows.push([r.name,r.pj,r.pg,r.pe,r.pp,r.gf,r.gc,r.gd,r.pts])); return rows.map(r=> r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n'); }
-function buildAllCSV(){ const players=load(LS_PLAYERS), matches=load(LS_MATCHES), results=load(LS_RESULTS); const rows=[['MatchID','Fecha','JugadorA','JugadorB','GolesA','GolesB','EnviadoPor','FechaEnvio']]; results.forEach(r=>{ const m=matches.find(mm=>mm.id===r.matchId)||{}; const a=players.find(p=>p.id===m.playerA)?.name||'--'; const b=players.find(p=>p.id===m.playerB)?.name||'--'; rows.push([r.matchId,m.datetime||'',a,b,r.goalsA,r.goalsB,r.submittedBy,r.createdAt]); }); return rows.map(r=> r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n'); }
-function downloadBlob(text,mime,filename){ const blob=new Blob([text],{type:mime}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=filename; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url); }
-
-// ===== Refresh orchestrator =====
+// ===== Refresh All =====
 function refreshAll(){
-  renderCodes(); renderStandings(); renderMatchesList(); renderCalendar(); fillAdminSelects(); renderAdminPlayers(); renderAdminResults();
+  renderCodes();
+  renderStandings();
+  renderMatchesList();
+  renderCalendar();
+  fillAdminSelects();
+  renderAdminPlayers();
+  renderAdminResults();
 }
-refreshAll();
 
-// ===== Utilities =====
-function escapeHtml(s){ if(!s) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-window.deletePlayer = deletePlayer;
-
-// ===== End =====
+// ===== Escape HTML =====
+function escapeHtml(str){
+  if(!str) return '';
+  return str.replace(/[&<>"']/g, m=>({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  }[m]));
+}

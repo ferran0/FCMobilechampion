@@ -34,17 +34,6 @@ function showToast(msg, ms=2800){
 }
 
 // ===== Seed if empty =====
-(function seedIfEmpty(){
- if (load(LS_PLAYERS).length === 0 && load(LS_MATCHES).length === 0 && load(LS_RESULTS).length === 0){
-    const p1 = { id: uid(), name: 'eca', pin: 'entoec6el', logo: null };
-    const p2 = { id: uid(), name: 'rival', pin: genPin(), logo: null };
-    save(LS_PLAYERS, [p1,p2]);
-    const mId = uid(); const now = new Date().toISOString();
-    save(LS_MATCHES, [{ id: mId, datetime: now, playerA: p1.id, playerB: p2.id, round: 1, played: true }]);
-    save(LS_RESULTS, [{ id: uid(), matchId: mId, goalsA: 2, goalsB: 1, evidence: null, submittedBy: p1.id, createdAt: new Date().toISOString() }]);
-  }
-})();
-
 // ===== Elements =====
 const btnRegister = document.getElementById('btn-register');
 const btnCalendar = document.getElementById('btn-calendar');

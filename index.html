@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>FC Mobile — Campeonato (GAMER)</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar gamer">
+    <div class="brand">
+      <img src="" alt="" class="brand-logo" aria-hidden>
+      <h1>FC Mobile — Campeonato</h1>
+      <div class="tag">Liga · Versión PRO (Gamer)</div>
+    </div>
+    <nav class="nav">
+      <button id="btn-register" class="nav-btn active">Registrarse</button>
+      <button id="btn-calendar" class="nav-btn">Calendario</button>
+      <button id="btn-table" class="nav-btn">Tabla</button>
+      <button id="btn-admin" class="nav-btn">Admin</button>
+    </nav>
+  </header>
+
+  <main class="container">
+    <!-- REGISTER -->
+    <section id="panel-register" class="panel">
+      <h2 class="section-title">🔒 Registrarse</h2>
+      <p class="muted">Ingresa tu nombre exacto de FC Mobile y el código (4 dígitos) que te dió el organizador.</p>
+      <form id="form-register" class="card">
+        <label>Nombre de cuenta
+          <input id="input-name" type="text" placeholder="ej: eca" required>
+        </label>
+        <label>Código de acceso (4 dígitos)
+          <input id="input-code" type="text" maxlength="4" placeholder="1234" required>
+        </label>
+        <div class="form-actions">
+          <button type="submit" class="btn primary">Registrarme</button>
+        </div>
+      </form>
+      <p id="register-msg" class="muted"></p>
+      <div id="show-pin" class="muted"></div>
+    </section>
+
+    <!-- CALENDAR -->
+    <section id="panel-calendar" class="panel hidden">
+      <div class="panel-header">
+        <h2 class="section-title">📅 Calendario</h2>
+        <div class="controls">
+          <label>Filtrar Jornada
+            <select id="filter-round">
+              <option value="">Todas</option>
+            </select>
+          </label>
+        </div>
+      </div>
+      <div id="calendar-list" class="cards-grid"></div>
+    </section>
+
+    <!-- TABLE -->
+    <section id="panel-table" class="panel hidden">
+      <div class="panel-header">
+        <h2 class="section-title">🏆 Tabla de posiciones</h2>
+        <div class="table-actions">
+          <button id="export-csv" class="btn">Exportar CSV</button>
+        </div>
+      </div>
+      <div id="standings-wrap" class="card standings-card"></div>
+
+      <h3 class="section-sub">Partidos (lista)</h3>
+      <div id="matches-list" class="cards-grid"></div>
+    </section>
+
+    <!-- ADMIN LOGIN -->
+    <section id="panel-admin-login" class="panel hidden">
+      <h2 class="section-title">🔐 Acceso Admin</h2>
+      <p class="muted">Introduce la clave privada del administrador.</p>
+      <form id="form-admin-login" class="card">
+        <input id="admin-key" type="password" placeholder="Clave admin">
+        <div class="form-actions"><button type="submit" class="btn primary">Entrar</button></div>
+      </form>
+      <p id="admin-login-msg" class="muted"></p>
+    </section>
+
+    <!-- ADMIN PANEL -->
+    <section id="panel-admin" class="panel hidden admin-panel">
+      <div class="panel-header">
+        <h2 class="section-title">🎛️ Panel Admin</h2>
+        <div class="small muted">Clave: privada · Admin oculto</div>
+      </div>
+
+      <div class="admin-grid">
+        <div class="card">
+          <h3>Pagar / Generar código</h3>
+          <p class="small">Genera un código de 4 dígitos (uso único) y compártelo por WhatsApp.</p>
+          <button id="btn-generate-code" class="btn primary">Generar 1 código</button>
+          <div id="codes-active" class="muted"></div>
+        </div>
+
+        <div class="card">
+          <h3>Agregar partido (Jornada libre)</h3>
+          <form id="form-add-match">
+            <label>Jornada (número)
+              <input id="match-round" type="number" min="1" placeholder="1" required>
+            </label>
+            <label>Fecha y hora
+              <input id="match-datetime" type="datetime-local" required>
+            </label>
+            <label>Jugador A
+              <select id="select-player-a" required></select>
+            </label>
+            <label>Jugador B
+              <select id="select-player-b" required></select>
+            </label>
+            <div class="form-actions"><button type="submit" class="btn">Agregar partido</button></div>
+          </form>
+        </div>
+
+        <div class="card">
+          <h3>Ingresar resultado (Admin)</h3>
+          <form id="form-admin-result">
+            <label>Partido
+              <select id="select-admin-match" required></select>
+            </label>
+            <label>Goles Jugador A
+              <input id="admin-goals-a" type="number" min="0" required>
+            </label>
+            <label>Goles Jugador B
+              <input id="admin-goals-b" type="number" min="0" required>
+            </label>
+            <div class="form-actions"><button type="submit" class="btn primary">Guardar resultado</button></div>
+          </form>
+        </div>
+      </div>
+
+      <hr class="soft">
+
+      <h3>Jugadores</h3>
+      <div id="admin-players" class="cards-grid"></div>
+
+      <hr class="soft">
+
+      <h3>Resultados (recientes)</h3>
+      <div id="admin-results" class="cards-grid"></div>
+
+      <div class="admin-actions">
+        <button id="btn-export-all" class="btn">Exportar todo (CSV)</button>
+        <button id="btn-logout-admin" class="btn">Cerrar sesión Admin</button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Toast / modal minimal -->
+  <div id="toast" class="toast hidden"></div>
+
+  <footer class="footer">
+    <small class="muted">Hecho para tu campeonato · Almacenamiento local (localStorage)</small>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

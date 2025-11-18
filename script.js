@@ -11,7 +11,7 @@
 */
 
 // ===== Storage keys =====
-//const LS_PLAYERS = 'fc_players_vfinal';
+const LS_PLAYERS = 'fc_players_vfinal';
 const LS_MATCHES = 'fc_matches_vfinal';
 const LS_RESULTS = 'fc_results_vfinal';
 const LS_CODES = 'fc_codes_vfinal';
@@ -23,7 +23,7 @@ const ADMIN_KEY = '48279509';
 const uid = () => 'id_' + Math.random().toString(36).slice(2,9);
 const genPin = () => Math.random().toString(36).slice(2,10);
 const gen4 = () => String(Math.floor(1000 + Math.random()*9000));
-const load = k => JSON.parse(localStorage.getItem(k) || '[]');
+//const load = k => JSON.parse(localStorage.getItem(k) || '[]');
 const save = (k,v) => localStorage.setItem(k, JSON.stringify(v));
 const toastEl = document.getElementById('toast') || (function(){ const t=document.createElement('div'); t.id='toast'; document.body.appendChild(t); return t; })();
 

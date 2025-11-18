@@ -1,17 +1,18 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>FC Mobile — Campeonato PRO</title>
-  <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FC MOBILE CHAMPIONSHIP 2025</title>
+  <link rel="stylesheet" href="styles.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚽</text></svg>">
 </head>
 <body>
-  <header class="topbar gamer">
-    <div class="brand">
-      <img src="" alt="" class="brand-logo" aria-hidden>
-      <h1>FC Mobile — Campeonato</h1>
-      <div class="tag">Liga · Versión PRO </div>
+  <header class="header">
+    <div class="logo">
+      <div class="logo-icon"></div>
+      <h1>FC MOBILE<span>CHAMPIONSHIP</span></h1>
     </div>
     <nav class="nav">
       <button id="btn-register" class="nav-btn active">Registrarse</button>
@@ -21,140 +22,107 @@
     </nav>
   </header>
 
-  <main class="container">
-    <!-- REGISTER -->
+  <main class="main">
+    <!-- REGISTRO -->
     <section id="panel-register" class="panel">
-      <h2 class="section-title">Registrarse</h2>
-      <p class="muted">Ingresa el nombre exacto de tu cuenta de FC Mobile y el código (4 dígitos) que te dió el organizador.</p>
-      <form id="form-register" class="card">
-        <label>Nombre de cuenta
-          <input id="input-name" type="text" placeholder="ej: eca" required>
-        </label>
-        <label>Código de acceso (4 dígitos)
-          <input id="input-code" type="text" maxlength="4" placeholder="1234" required>
-        </label>
-        <div class="form-actions">
-          <button type="submit" class="btn primary">Registrarme</button>
-        </div>
-      </form>
-      <p id="register-msg" class="muted"></p>
-      <div id="show-pin" class="muted"></div>
+      <div class="card glow">
+        <h2>Registrarse al Torneo</h2>
+        <p>Ingresa tu nombre exacto de FC Mobile y el código que te pasó el organizador.</p>
+        <form id="form-register">
+          <input id="input-name" type="text" placeholder="Nombre en FC Mobile" required />
+          <input id="input-code" type="text" maxlength="4" placeholder="Código 4 dígitos" required />
+          <button type="submit" class="btn primary">REGISTRARME AHORA</button>
+        </form>
+        <p id="register-msg" class="msg"></p>
+        <div id="show-pin" class="pin-box"></div>
+      </div>
     </section>
 
-    <!-- CALENDAR -->
+    <!-- CALENDARIO -->
     <section id="panel-calendar" class="panel hidden">
-      <div class="panel-header">
-        <h2 class="section-title">Calendario</h2>
-        <div class="controls">
-          <label>Filtrar Jornada
-            <select id="filter-round">
-              <option value="">Todas</option>
-            </select>
-          </label>
-        </div>
+      <div class="section-header">
+        <h2>Calendario de Partidos</h2>
+        <select id="filter-round" class="select-glow"></select>
       </div>
-      <div id="calendar-list" class="cards-grid"></div>
+      <div id="calendar-list" class="matches-grid"></div>
     </section>
 
-    <!-- TABLE -->
+    <!-- TABLA -->
     <section id="panel-table" class="panel hidden">
-      <div class="panel-header">
-        <h2 class="section-title">Tabla de posiciones</h2>
-        <div class="table-actions">
-          <button id="export-csv" class="btn">Exportar CSV</button>
-        </div>
+      <div class="section-header">
+        <h2>Tabla de Posiciones</h2>
+        <button id="export-csv" class="btn secondary">Exportar CSV</button>
       </div>
-      <div id="standings-wrap" class="card standings-card"></div>
+      <div id="standings-wrap" class="standings-card"></div>
 
-      <h3 class="section-sub">Partidos (lista)</h3>
-      <div id="matches-list" class="cards-grid"></div>
+      <h3 class="mt-8">Historial de Partidos</h3>
+      <div id="matches-list" class="matches-grid"></div>
     </section>
 
     <!-- ADMIN LOGIN -->
     <section id="panel-admin-login" class="panel hidden">
-      <h2 class="section-title">Acceso Admin</h2>
-      <p class="muted">Introduce la clave privada del administrador.</p>
-      <form id="form-admin-login" class="card">
-        <input id="admin-key" type="password" placeholder="Clave admin">
-        <div class="form-actions"><button type="submit" class="btn primary">Entrar</button></div>
-      </form>
-      <p id="admin-login-msg" class="muted"></p>
+      <div class="card glow">
+        <h2>Acceso Administrador</h2>
+        <form id="form-admin-login">
+          <input id="admin-key" type="password" placeholder="Clave secreta" />
+          <button type="submit" class="btn primary">INGRESAR</button>
+        </form>
+        <p id="admin-login-msg" class="msg error"></p>
+      </div>
     </section>
 
-    <!-- ADMIN PANEL -->
-    <section id="panel-admin" class="panel hidden admin-panel">
-      <div class="panel-header">
-        <h2 class="section-title">Panel Admin</h2>
-        <div class="small muted">Clave: privada · Admin oculto</div>
+    <!-- PANEL ADMIN -->
+    <section id="panel-admin" class="panel hidden">
+      <div class="admin-header">
+        <h2>PANEL DE CONTROL</h2>
+        <button id="btn-logout-admin" class="btn danger small">Cerrar sesión</button>
       </div>
 
       <div class="admin-grid">
-        <div class="card">
-          <h3>Pagar / Generar código</h3>
-          <p class="small">Genera un código de 4 dígitos (uso único) y compártelo por WhatsApp.</p>
-          <button id="btn-generate-code" class="btn primary">Generar 1 código</button>
-          <div id="codes-active" class="muted"></div>
+        <div class="card glow">
+          <h3>Generar Código</h3>
+          <button id="btn-generate-code" class="btn primary">+ Generar Código</button>
+          <div id="codes-active" class="codes-display"></div>
         </div>
 
-        <div class="card">
-          <h3>Agregar partido (Jornada libre)</h3>
+        <div class="card glow">
+          <h3>Agregar Partido</h3>
           <form id="form-add-match">
-            <label>Jornada (número)
-              <input id="match-round" type="number" min="1" placeholder="1" required>
-            </label>
-            <label>Fecha y hora
-              <input id="match-datetime" type="datetime-local" required>
-            </label>
-            <label>Jugador A
-              <select id="select-player-a" required></select>
-            </label>
-            <label>Jugador B
-              <select id="select-player-b" required></select>
-            </label>
-            <div class="form-actions"><button type="submit" class="btn">Agregar partido</button></div>
+            <input id="match-round" type="number" placeholder="Jornada" min="1" required />
+            <input id="match-datetime" type="datetime-local" required />
+            <select id="select-player-a" required></select>
+            <select id="select-player-b" required></select>
+            <button type="submit" class="btn">Agregar</button>
           </form>
         </div>
 
-        <div class="card">
-          <h3>Ingresar resultado (Admin)</h3>
+        <div class="card glow">
+          <h3>Ingresar Resultado</h3>
           <form id="form-admin-result">
-            <label>Partido
-              <select id="select-admin-match" required></select>
-            </label>
-            <label>Goles Jugador A
-              <input id="admin-goals-a" type="number" min="0" required>
-            </label>
-            <label>Goles Jugador B
-              <input id="admin-goals-b" type="number" min="0" required>
-            </label>
-            <div class="form-actions"><button type="submit" class="btn primary">Guardar resultado</button></div>
+            <select id="select-admin-match" required></select>
+            <div class="score-input">
+              <input id="admin-goals-a" type="number" min="0" placeholder="0" required />
+              <span>VS</span>
+              <input id="admin-goals-b" type="number" min="0" placeholder="0" required />
+            </div>
+            <button type="submit" class="btn primary">Guardar</button>
           </form>
         </div>
       </div>
 
-      <hr class="soft">
+      <h3 class="mt-8">Jugadores</h3>
+      <div id="admin-players" class="players-grid"></div>
 
-      <h3>Jugadores</h3>
-      <div id="admin-players" class="cards-grid"></div>
+      <h3 class="mt-8">Últimos Resultados</h3>
+      <div id="admin-results" class="matches-grid"></div>
 
-      <hr class="soft">
-
-      <h3>Resultados (recientes)</h3>
-      <div id="admin-results" class="cards-grid"></div>
-
-      <div class="admin-actions">
-        <button id="btn-export-all" class="btn">Exportar todo (CSV)</button>
-        <button id="btn-logout-admin" class="btn">Cerrar sesión Admin</button>
+      <div class="mt-8 text-center">
+        <button id="btn-export-all" class="btn secondary">Exportar Todo (CSV)</button>
       </div>
     </section>
-
   </main>
 
-  <div id="toast" class="toast hidden"></div>
-
-  <footer class="footer">
-    <small class="muted">Hecho para tu campeonato · Almacenamiento local (localStorage)</small>
-  </footer>
+  <div id="toast" class="toast"></div>
 
   <script src="script.js"></script>
 </body>

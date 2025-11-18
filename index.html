@@ -1,1 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Torneo FC Mobile</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏆 Torneo FC Mobile</h1>
+            <nav>
+                <button onclick="showSection('register')">Registrarse</button>
+                <button onclick="showSection('calendar')">Calendario</button>
+                <button onclick="showSection('table')">Tabla de Posiciones</button>
+                <button onclick="promptAdmin()">Admin</button>
+            </nav>
+        </header>
 
+        <!-- Registro -->
+        <section id="register" class="section">
+            <h2>Registrarse al Torneo</h2>
+            <div class="form-group">
+                <input type="text" id="playerName" placeholder="Nombre exacto en FC Mobile">
+                <input type="text" id="regCode" placeholder="Código de registro (4 dígitos)" maxlength="4">
+                <button onclick="registerPlayer()">Registrarse</button>
+            </div>
+            <p id="regMessage"></p>
+        </section>
+
+        <!-- Calendario -->
+        <section id="calendar" class="section">
+            <h2>Calendario de Partidos</h2>
+            <div id="matchesList"></div>
+        </section>
+
+        <!-- Tabla de Posiciones -->
+        <section id="table" class="section">
+            <h2>Tabla de Posiciones</h2>
+            <table id="standingsTable">
+                <thead>
+                    <tr>
+                        <th>Pos</th>
+                        <th>Jugador</th>
+                        <th>PJ</th>
+                        <th>PG</th>
+                        <th>PE</th>
+                        <th>PP</th>
+                        <th>GF</th>
+                        <th>GC</th>
+                        <th>DG</th>
+                        <th>Pts</th>
+                    </tr>
+                </thead>
+                <tbody id="standingsBody"></tbody>
+            </table>
+        </section>
+
+        <!-- Admin (oculta) -->
+        <section id="admin" class="section hidden">
+            <h2>Panel de Administración</h2>
+            
+            <div class="admin-block">
+                <h3>Generar Código de Registro</h3>
+                <button onclick="generateCode()" class="neon-btn">Generar Código Nuevo</button>
+                <p id="newCode"></p>
+            </div>
+
+            <div class="admin-block">
+                <h3>Crear Partido</h3>
+                <select id="playerA"></select>
+                <span> vs </span>
+                <select id="playerB"></select>
+                <input type="date" id="matchDate">
+                <input type="time" id="matchTime">
+                <button onclick="createMatch()" class="neon-btn">Crear Partido</button>
+            </div>
+
+            <div class="admin-block">
+                <h3>Registrar Resultado</h3>
+                <select id="resultMatch" onchange="loadResultInputs()"></select>
+                <div id="resultInputs" style="margin:10px 0;"></div>
+                <button onclick="saveResult()" class="neon-btn">Guardar Resultado</button>
+            </div>
+
+            <div class="admin-block">
+                <h3>Jugadores Registrados</h3>
+                <ul id="playersList"></ul>
+            </div>
+
+            <button onclick="logoutAdmin()" class="neon-btn red">Cerrar Sesión Admin</button>
+        </section>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
